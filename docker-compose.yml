@@ -31,7 +31,7 @@ services:
     container_name: hda_app
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8009:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=hda_db;Username=hda_user;Password=hda_pass"

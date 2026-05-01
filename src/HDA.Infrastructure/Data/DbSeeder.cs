@@ -204,7 +204,7 @@ public static class DbSeeder
             ("necrolyte","Necrophos","int","Ranged",["Carry","Nuker","Jungler","Durable"],36),
             ("warlock","Warlock","int","Ranged",["Support","Nuker","Initiator","Disabler"],37),
             ("shadow_shaman","Shadow Shaman","int","Ranged",["Support","Pusher","Disabler","Nuker"],27),
-            ("silencer","Silencer","int","Ranged",["Support","Carry","Disabler","Nuker","Pusher","Durable","Initiator"],39),
+            ("silencer","Silencer","int","Ranged",["Support","Carry","Disabler","Nuker","Pusher","Durable","Initiator"],150),
             ("obsidian_destroyer","Outworld Destroyer","int","Ranged",["Carry","Nuker","Disabler","Escape","Support"],76),
             ("ancient_apparition","Ancient Apparition","int","Ranged",["Support","Nuker","Disabler","Initiator"],68),
             ("tinker","Tinker","int","Ranged",["Carry","Nuker","Pusher","Escape","Disabler"],34),
@@ -252,11 +252,25 @@ public static class DbSeeder
             ("largo","Largo","str","Melee",["Support","Disabler","Durable"],145),
             ("ember_spirit","Ember Spirit","agi","Melee",["Carry","Escape","Nuker","Disabler","Initiator"],106),
         };
-        ctx.Heroes.AddRange(heroData.Select(h => new Hero
+        foreach (var h in heroData)
         {
-            Name=h.n, LocalizedName=h.ln, PrimaryAttribute=h.attr, AttackType=h.atk, Roles=h.roles, OpenDotaId=h.id,
-            ImageUrl=GetHeroImageUrl(h.n)
-        }));
+            var exists = await ctx.Heroes.AnyAsync(x => x.OpenDotaId == h.id);
+            if (!exists)
+            {
+                var hero = new Hero
+                {
+                    Name = h.n,
+                     LocalizedName = h.ln,
+                    PrimaryAttribute = h.attr,
+                    AttackType = h.atk,
+                    Roles = h.roles,
+                    OpenDotaId = h.id,
+                    ImageUrl = GetHeroImageUrl(h.n)
+                };
+                    ctx.Heroes.Add(hero);
+            }
+        }
+        await ctx.SaveChangesAsync();
 
         
         
